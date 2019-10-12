@@ -1,9 +1,33 @@
 package org.opentripplanner.index;
 
-import com.google.common.collect.ImmutableMap;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.LineString;
+import org.opentripplanner.gtfs.GtfsLibrary;
+import org.opentripplanner.index.model.StopTimesInPattern;
+import org.opentripplanner.index.model.TripTimeShort;
+import org.opentripplanner.model.Agency;
+import org.opentripplanner.model.FeedScopedId;
+import org.opentripplanner.model.Route;
+import org.opentripplanner.model.Stop;
+import org.opentripplanner.model.Trip;
+import org.opentripplanner.model.calendar.ServiceDate;
+import org.opentripplanner.profile.StopCluster;
+import org.opentripplanner.routing.edgetype.SimpleTransfer;
+import org.opentripplanner.routing.edgetype.TripPattern;
+import org.opentripplanner.routing.graph.GraphIndex;
+import org.opentripplanner.routing.trippattern.RealTimeState;
+import org.opentripplanner.routing.vertextype.TransitVertex;
+import org.opentripplanner.updater.GtfsRealtimeFuzzyTripMatcher;
+
 import graphql.Scalars;
 import graphql.relay.Relay;
 import graphql.relay.SimpleListConnection;
@@ -19,26 +43,6 @@ import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLTypeReference;
 import graphql.schema.TypeResolver;
-import org.opentripplanner.model.Agency;
-import org.opentripplanner.model.FeedScopedId;
-import org.opentripplanner.model.Route;
-import org.opentripplanner.model.Stop;
-import org.opentripplanner.model.Trip;
-import org.opentripplanner.model.calendar.ServiceDate;
-import org.opentripplanner.gtfs.GtfsLibrary;
-import org.opentripplanner.index.model.StopTimesInPattern;
-import org.opentripplanner.index.model.TripTimeShort;
-import org.opentripplanner.profile.StopCluster;
-import org.opentripplanner.routing.edgetype.SimpleTransfer;
-import org.opentripplanner.routing.edgetype.TripPattern;
-import org.opentripplanner.routing.graph.GraphIndex;
-import org.opentripplanner.routing.trippattern.RealTimeState;
-import org.opentripplanner.routing.vertextype.TransitVertex;
-import org.opentripplanner.updater.GtfsRealtimeFuzzyTripMatcher;
-
-import java.text.ParseException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class IndexGraphQLSchema {
 
@@ -306,10 +310,10 @@ public class IndexGraphQLSchema {
                     .getOutgoing()
                     .stream()
                     .filter(edge -> edge instanceof SimpleTransfer)
-                    .map(edge -> new ImmutableMap.Builder<String, Object>()
-                        .put("stop", ((TransitVertex) edge.getToVertex()).getStop())
-                        .put("distance", edge.getDistance())
-                        .build())
+                    .map(edge -> new GraphIndex.StopAndDistance(
+                    		((TransitVertex) edge.getToVertex()).getStop(), 
+                    		Math.toIntExact(Math.round(edge.getDistance())))
+                    	)
                     .collect(Collectors.toList()))
                 .build())
             .field(GraphQLFieldDefinition.newFieldDefinition()
