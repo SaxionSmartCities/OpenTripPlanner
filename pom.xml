@@ -8,7 +8,7 @@
 
     <groupId>org.opentripplanner</groupId>
     <artifactId>otp</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -262,6 +262,7 @@
                 <version>2.21.0</version>
                 <configuration>
                     <argLine>-Xmx2G</argLine>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
                     <!-- Jenkins needs XML test reports to determine whether the build is stable. -->
                     <disableXmlReport>false</disableXmlReport>
                 </configuration>

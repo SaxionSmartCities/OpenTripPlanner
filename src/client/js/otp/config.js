@@ -122,8 +122,8 @@ otp.config = {
      * Site name / description / branding display options
      */
 
-    siteName            : "My OTP Instance",
-    siteDescription     : "An OpenTripPlanner deployment.",
+    siteName            : "NetMobiel OTP",
+    siteDescription     : "NetMobiel OpenTripPlanner deployment.",
     logoGraphic         : 'images/otp_logo_darkbg_40px.png',
     // bikeshareName    : "",
     //Enable this if you want to show frontend language chooser
@@ -184,7 +184,7 @@ otp.config = {
 
     //This is shown if showLanguageChooser is true
     infoWidgetLangChooser : {
-        title: '<img src="/images/language_icon.svg" onerror="this.onerror=\'\';this.src=\'/images/language_icon.png\'" width="30px" height="30px"/>', 
+        title: '<img src="images/language_icon.svg" onerror="this.onerror=\'\';this.src=\'images/language_icon.png\'" width="30px" height="30px"/>', 
         languages: true
     },
     
