@@ -376,7 +376,9 @@ public class GraphPathFinder {
                 request.rctx.slopeRestrictionRemoved = true;
                 paths = getGraphPathsConsideringIntermediates(relaxedRequest);
             }
-            request.rctx.debugOutput.finishedCalculating();
+            if (request.rctx != null) {
+                request.rctx.debugOutput.finishedCalculating();
+            }
         } catch (VertexNotFoundException e) {
             LOG.info("Vertex not found: " + request.from + " : " + request.to);
             throw e;
@@ -405,7 +407,9 @@ public class GraphPathFinder {
 
         if (paths == null || paths.size() == 0) {
             LOG.debug("Path not found: " + request.from + " : " + request.to);
-            request.rctx.debugOutput.finishedRendering(); // make sure we still report full search time
+            if (request.rctx != null) {
+            	request.rctx.debugOutput.finishedRendering(); // make sure we still report full search time
+            }
             throw new PathNotFoundException();
         }
 
