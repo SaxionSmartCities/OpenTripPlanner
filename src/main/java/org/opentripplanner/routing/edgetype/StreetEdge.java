@@ -218,8 +218,11 @@ public class StreetEdge extends Edge implements Cloneable {
         if (tov instanceof BarrierVertex) {
             permission = permission.intersection(((BarrierVertex) tov).getBarrierPermissions());
         }
-
-        return permission.allows(mode);
+        boolean canTraverse = permission.allows(mode); 
+        if (! canTraverse) {
+//        	LOG.warn("Cannot traverse " + this.name);
+        }
+        return canTraverse;
     }
 
     public PackedCoordinateSequence getElevationProfile() {
@@ -482,7 +485,9 @@ public class StreetEdge extends Edge implements Cloneable {
                     weight += calculateOverageWeight(s0.getPreTransitTime(), s1.getPreTransitTime(),
                             options.maxPreTransitTime, options.preTransitPenalty,
                                     options.preTransitOverageRate);
-                } else return null;
+                } else {
+                	return null;
+                }
             }
         }
         

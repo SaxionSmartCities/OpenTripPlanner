@@ -491,6 +491,13 @@ public class GraphPathFinder {
             // add the next subpath
             for (Edge e : path.edges) {
                 lastState = e.traverse(lastState);
+                // JR 2020-01-30 If the traversal goes nowhere (null) then the path stops. Or should we skip the path?
+                if (lastState == null) {
+                    LOG.error("A traversal returns NULL. This is perhaps a bug.");
+                    // Throw exception, otherwise we get an invalid trip plan.
+                    throw new PathNotFoundException();
+//                    break;
+                }
                 newPath.edges.add(e);
                 newPath.states.add(lastState);
             }
